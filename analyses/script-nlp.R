@@ -1,35 +1,29 @@
 ## Load the references ----
 
-refs <- rbibtools::read_bib(here::here("data"))
-
-
-## Screen on titles - Single words ----
-
+refs   <- rbibtools::read_bib(here::here("data"))
 titles <- refs$"title"
 
-patterns <- c("function", "trait")
+
+## Load terms to search for ----
+
+single_words <- read.csv(here::here("data", "single_words_search.csv"))
+single_words <- single_words$"word"
+
+expressions  <- read.csv(here::here("data", "expressions_search.csv"))
+expressions  <- expressions$"expression"
+
+
+## Screen titles ----
 
 titles_clean <- clean_string(titles)
 
-screens_1 <- lapply(patterns, screen, x = titles_clean)
-screens_1 <- as.data.frame(screens_1)
-colnames(screens_1) <- patterns
+screens_swd  <- screen(titles_clean, single_words)
+screens_expr <- screen(titles_clean, expressions)
 
 
-## Screen on titles - Multiple words (tokenization) ----
+## Append results ----
 
-token_orig  <- c("species richness", "tree species")
-token_regex <- gsub("\\s", "", token_orig)
-
-titles_clean <- clean_string(titles)
-
-titles_clean_token <- tokenization(titles_clean, token_orig, token_regex)
-
-screens_2 <- lapply(token_regex, screen, x = titles_clean_token)
-screens_2 <- as.data.frame(screens_2)
-colnames(screens_2) <- gsub("\\s", "_", token_orig)
-
-my_screens <- cbind(screens_1, screens_2)
+my_screens <- cbind(screens_swd, screens_expr)
 
 
 ## Export ----

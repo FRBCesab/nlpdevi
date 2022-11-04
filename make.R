@@ -29,5 +29,4 @@ pkgload::load_all(here::here())
 
 ## Run Project ----
 
-# List all R scripts in a sequential order and using the following form:
 source(here::here("analyses", "script-nlp.R"))
